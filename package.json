@@ -1,0 +1,22 @@
+{
+  "name": "orbitflow-task-manager-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:preview": "npm --prefix frontend run preview",
+    "backend:dev": "npm --prefix server run dev",
+    "backend:start": "npm --prefix server start",
+    "backend:seed": "npm --prefix server run seed",
+    "build": "npm --prefix frontend run build",
+    "build:all": "npm --prefix frontend run build",
+    "audit:prod": "npm --prefix frontend audit --omit=dev && npm --prefix server audit --omit=dev"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
