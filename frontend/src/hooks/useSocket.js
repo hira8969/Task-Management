@@ -14,7 +14,10 @@ export function useSocket() {
     const socket = getSocket();
     socket.auth = { token };
     socket.connect();
-    socket.on('task:changed', () => queryClient.invalidateQueries({ queryKey: ['tasks'] }));
+    socket.on('task:changed', (payload) => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      if (payload?.action) toast(`Task ${payload.action}`);
+    });
     socket.on('dashboard:changed', () => queryClient.invalidateQueries({ queryKey: ['dashboard'] }));
     socket.on('notification:new', (notification) => {
       pushNotification(notification);

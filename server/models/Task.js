@@ -6,7 +6,21 @@ const taskSchema = new mongoose.Schema(
     description: String,
     status: { type: String, enum: ['todo', 'in-progress', 'review', 'completed'], default: 'todo', index: true },
     priority: { type: String, enum: ['low', 'medium', 'high', 'urgent'], default: 'medium', index: true },
+    startDate: Date,
     dueDate: Date,
+    reminderAt: Date,
+    progress: { type: Number, min: 0, max: 100, default: 0 },
+    estimatedHours: { type: Number, min: 0, default: 0 },
+    actualHours: { type: Number, min: 0, default: 0 },
+    billingType: { type: String, enum: ['non-billable', 'billable'], default: 'non-billable' },
+    recurrence: { type: String, enum: ['none', 'daily', 'weekly', 'monthly'], default: 'none' },
+    tags: [{ type: String, trim: true }],
+    checklist: [
+      {
+        title: { type: String, required: true, trim: true },
+        completed: { type: Boolean, default: false }
+      }
+    ],
     workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'Workspace', required: true, index: true },
     assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

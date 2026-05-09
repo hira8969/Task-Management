@@ -10,8 +10,8 @@ import { dashboardService } from '../services/api.js';
 const fallback = {
   metrics: { totalTasks: 42, completedTasks: 18, overdueTasks: 3, teamMembers: 8 },
   velocity: [
-    { label: 'Mon', value: 12 }, { label: 'Tue', value: 18 }, { label: 'Wed', value: 16 },
-    { label: 'Thu', value: 24 }, { label: 'Fri', value: 21 }, { label: 'Sat', value: 10 }, { label: 'Sun', value: 14 }
+    { label: 'Mon', date: '04 May', value: 12 }, { label: 'Tue', date: '05 May', value: 18 }, { label: 'Wed', date: '06 May', value: 16 },
+    { label: 'Thu', date: '07 May', value: 24 }, { label: 'Fri', date: '08 May', value: 21 }, { label: 'Sat', date: '09 May', value: 10 }, { label: 'Sun', date: '10 May', value: 14 }
   ],
   activities: [
     { title: 'Roadmap board updated', description: 'Three tasks moved into review.' },

@@ -7,7 +7,7 @@ export default function Modal({ open, title, children, onClose }) {
       {open ? (
         <motion.div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/60 p-4 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <motion.div
-            className="glass-panel w-full max-w-xl rounded-xl p-5"
+            className="glass-panel max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-xl p-5"
             initial={{ y: 24, scale: 0.98, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 16, opacity: 0 }}
