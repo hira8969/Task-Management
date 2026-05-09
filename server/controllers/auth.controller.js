@@ -80,7 +80,14 @@ export const login = asyncHandler(async (req, res) => {
 export const refresh = asyncHandler(async (req, res) => {
   const token = req.signedCookies.refreshToken;
   if (!token) throw new ApiError(401, 'Refresh token missing');
-  const payload = jwt.verify(token, env.jwtRefreshSecret);
+  let payload;
+  try {
+    payload = jwt.verify(token, env.jwtRefreshSecret);
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') throw new ApiError(401, 'Refresh token expired');
+    if (error.name === 'JsonWebTokenError') throw new ApiError(401, 'Invalid refresh token');
+    throw error;
+  }
   const user = await User.findById(payload.sub);
   if (!user || user.tokenVersion !== payload.tokenVersion) throw new ApiError(401, 'Refresh token revoked');
   sessionResponse(res, user);

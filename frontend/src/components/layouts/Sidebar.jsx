@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { LogOut, Menu, Orbit } from 'lucide-react';
 import { navigationItems } from '../../constants/navigation.js';
 import { authService } from '../../services/api.js';
+import { disconnectSocket } from '../../services/socket.js';
 import { useAppStore } from '../../store/useAppStore.js';
 import { cn } from '../../utils/cn.js';
 
@@ -13,6 +14,7 @@ export default function Sidebar() {
 
   const logout = async () => {
     await authService.logout().catch(() => null);
+    disconnectSocket();
     clearSession();
   };
 

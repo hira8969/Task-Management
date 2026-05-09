@@ -14,3 +14,9 @@ export function getSocket() {
   }
   return socket;
 }
+
+export function disconnectSocket() {
+  if (!socket) return;
+  socket.removeAllListeners();
+  socket.disconnect();
+}

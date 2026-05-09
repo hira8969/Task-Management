@@ -1,4 +1,8 @@
 import Task from '../models/Task.js';
+import '../models/Attachment.js';
+import '../models/Category.js';
+import '../models/Comment.js';
+import '../models/Label.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { buildQuery } from '../utils/queryFeatures.js';

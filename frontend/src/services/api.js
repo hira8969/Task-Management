@@ -8,6 +8,26 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 });
 
+let refreshPromise = null;
+
+export async function refreshSession() {
+  refreshPromise ??= axios
+    .post(`${env.apiUrl}/auth/refresh`, {}, { withCredentials: true })
+    .then((res) => {
+      useAppStore.getState().setSession(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      useAppStore.getState().clearSession();
+      throw error;
+    })
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 api.interceptors.request.use((config) => {
   const token = useAppStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -18,11 +38,12 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original?._retry) {
+    const isAuthRoute = original?.url?.includes('/auth/login') || original?.url?.includes('/auth/register') || original?.url?.includes('/auth/refresh');
+    if (error.response?.status === 401 && original && !original._retry && !isAuthRoute) {
       original._retry = true;
       try {
-        const { data } = await axios.post(`${env.apiUrl}/auth/refresh`, {}, { withCredentials: true });
-        useAppStore.getState().setSession(data);
+        const data = await refreshSession();
+        original.headers = original.headers || {};
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
       } catch {

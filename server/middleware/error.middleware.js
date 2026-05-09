@@ -7,7 +7,13 @@ export function notFound(req, _res, next) {
 
 export function errorHandler(error, _req, res, _next) {
   const statusCode = error.statusCode || 500;
-  if (statusCode >= 500) logger.error(error);
+  if (statusCode >= 500) {
+    logger.error({
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
+  }
   res.status(statusCode).json({
     message: error.message || 'Internal server error',
     details: error.details || undefined
