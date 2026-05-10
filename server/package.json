@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "concurrently -k -n backend,frontend -c blue,green \"npm run dev:api\" \"npm --prefix ../frontend run dev\"",
     "dev:api": "nodemon server.js",
+    "build:frontend": "node scripts/ensure-frontend-build.mjs --force",
+    "prestart": "node scripts/ensure-frontend-build.mjs",
     "start": "node server.js",
     "seed": "node utils/seed.js"
   },

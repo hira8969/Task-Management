@@ -91,6 +91,14 @@ The root `postinstall` script installs both `frontend/` and `server/` dependenci
 
 The Express backend serves the generated `frontend/dist` bundle when `NODE_ENV=production`. Frontend routes are handled by the backend fallback, so pages like `/tasks`, `/dashboard`, and `/login` work after refresh. API routes stay under `/api`, and Socket.IO uses the same deployed host.
 
+If deploying only the `server/` folder on Render, use:
+
+```bash
+npm start
+```
+
+The server `prestart` script automatically installs frontend dependencies when needed and builds `../frontend/dist` before the backend starts. After that, the backend URL serves both the API and the frontend.
+
 Use these local env values:
 
 ```text

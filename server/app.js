@@ -71,7 +71,10 @@ if (env.nodeEnv === 'production' && hasFrontendBuild) {
     return res.sendFile(frontendIndex);
   });
 } else if (env.nodeEnv === 'production') {
-  app.get('/', (_req, res) => res.status(503).json({ message: 'Frontend build not found. Run npm run build before deployment start.' }));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    return res.status(503).json({ message: 'Frontend build not found. Run npm run build:frontend before deployment start.' });
+  });
 }
 
 app.use(notFound);
