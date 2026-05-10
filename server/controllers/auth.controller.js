@@ -27,45 +27,52 @@ export const register = asyncHandler(async (req, res) => {
   const { name, email, password, workspaceName } = req.body;
   const existing = await User.findOne({ email });
   if (existing) throw new ApiError(409, 'Email already registered');
-  const user = await User.create({ name, email, password, role: 'owner' });
-  const workspace = await Workspace.create({
-    name: workspaceName,
-    slug: `${workspaceName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`,
-    owner: user._id,
-    members: [{ user: user._id, role: 'owner' }]
-  });
-  user.workspace = workspace._id;
-  await user.save();
-  await Task.insertMany([
-    {
-      title: 'Create your first project plan',
-      description: 'Add goals, owners, due dates, and labels for the work your team is starting.',
-      priority: 'high',
-      status: 'todo',
-      workspace: workspace._id,
-      createdBy: user._id,
-      dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-    },
-    {
-      title: 'Invite your teammates',
-      description: 'Bring collaborators into the workspace so tasks, comments, and updates stay in one place.',
-      priority: 'medium',
-      status: 'in-progress',
-      workspace: workspace._id,
-      createdBy: user._id,
-      dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000)
-    },
-    {
-      title: 'Review dashboard analytics',
-      description: 'Track team velocity, overdue work, completion rate, and recent activity.',
-      priority: 'medium',
-      status: 'review',
-      workspace: workspace._id,
-      createdBy: user._id,
-      dueDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000)
-    }
-  ]);
-  sessionResponse(res.status(201), user);
+  let user;
+  try {
+    user = await User.create({ name, email, password, role: 'owner' });
+    const workspace = await Workspace.create({
+      name: workspaceName,
+      slug: `${workspaceName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`,
+      owner: user._id,
+      members: [{ user: user._id, role: 'owner' }]
+    });
+    user.workspace = workspace._id;
+    await user.save();
+    await Task.insertMany([
+      {
+        title: 'Create your first project plan',
+        description: 'Add goals, owners, due dates, and labels for the work your team is starting.',
+        priority: 'high',
+        status: 'todo',
+        workspace: workspace._id,
+        createdBy: user._id,
+        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: 'Invite your teammates',
+        description: 'Bring collaborators into the workspace so tasks, comments, and updates stay in one place.',
+        priority: 'medium',
+        status: 'in-progress',
+        workspace: workspace._id,
+        createdBy: user._id,
+        dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: 'Review dashboard analytics',
+        description: 'Track team velocity, overdue work, completion rate, and recent activity.',
+        priority: 'medium',
+        status: 'review',
+        workspace: workspace._id,
+        createdBy: user._id,
+        dueDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000)
+      }
+    ]);
+    sessionResponse(res.status(201), user);
+  } catch (error) {
+    if (user?._id) await User.deleteOne({ _id: user._id });
+    if (error.code === 11000) throw new ApiError(409, 'Email already registered');
+    throw error;
+  }
 });
 
 export const login = asyncHandler(async (req, res) => {

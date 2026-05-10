@@ -27,7 +27,8 @@ export default function LoginPage() {
       toast.success('Welcome back');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed. Please check your email and password.');
+      const message = error.response?.data?.message || error.message || 'Login failed. Please check your email and password.';
+      toast.error(message);
     }
   };
 

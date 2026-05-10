@@ -28,7 +28,8 @@ export default function RegisterPage() {
       toast.success('Workspace created');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Could not create workspace.');
+      const message = error.response?.data?.message || error.message || 'Could not create workspace.';
+      toast.error(message);
     }
   };
 
