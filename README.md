@@ -28,7 +28,7 @@ This starts the backend on `http://localhost:5000` and the frontend on `http://l
 
 `npm run backend:dev` also starts both apps. Use `npm run backend:only` only when you need the API server without the Vite frontend.
 
-If you are inside the `server/` directory, `npm run dev` starts the API and the frontend together.
+If you are inside the `server/` directory, `npm run dev` starts only the API server. Use `npm run dev:full` there only for local full-stack development.
 
 Seed local MongoDB or Atlas:
 
@@ -79,33 +79,26 @@ npm run backend:seed
 
 During development, the frontend runs on `http://localhost:5173` and proxies `/api` requests to `http://localhost:5000`. Socket.IO connects through `VITE_SOCKET_URL`, which defaults to the backend server.
 
-For a combined production deployment, build the frontend and start the backend:
+Production is split by platform: Vercel serves the frontend, and Render serves the backend API.
 
-```bash
-npm install
-npm run build
-npm start
-```
-
-The root `postinstall` script installs both `frontend/` and `server/` dependencies on a clean deployment server.
-
-The Express backend serves the generated `frontend/dist` bundle when `NODE_ENV=production`. Frontend routes are handled by the backend fallback, so pages like `/tasks`, `/dashboard`, and `/login` work after refresh. API routes stay under `/api`, and Socket.IO uses the same deployed host.
-
-For Render, deploy from the repository root so the backend can build and serve `frontend/dist`:
+Render backend settings:
 
 ```text
-Root Directory: .
-Build Command: npm install && npm run build
+Root Directory: server
+Build Command: npm install
 Start Command: npm start
 ```
 
-If you deploy from inside the `server/` folder, use:
+If Render is still configured with `npm run dev`, change it to `npm start`. The backend `dev` script is backend-only now, but production should still use `start`.
 
-```bash
-npm start
+Vercel frontend env:
+
+```text
+VITE_API_URL=https://task-management-75oz.onrender.com/api
+VITE_SOCKET_URL=https://task-management-75oz.onrender.com
 ```
 
-The server `prestart` script automatically installs frontend dependencies when needed and builds `../frontend/dist` before the backend starts. After that, the backend URL serves both the API and the frontend. If `frontend/` is not available to the Render service, the backend cannot serve the frontend.
+Render backend root (`/`) redirects to the Vercel frontend. API routes stay under `/api`.
 
 Use these local env values:
 
@@ -125,6 +118,8 @@ In production, set:
 ```text
 NODE_ENV=production
 PORT=your-platform-port
+CLIENT_URL=https://task-management-fawn-three.vercel.app
+CLIENT_URLS=https://task-management-fawn-three.vercel.app,https://task-management-jnzoak7lr-hira8969s-projects.vercel.app
 MONGO_URI=your-production-mongodb-uri
 JWT_ACCESS_SECRET=your-strong-access-secret
 JWT_REFRESH_SECRET=your-strong-refresh-secret

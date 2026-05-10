@@ -68,10 +68,7 @@ if (hasFrontendBuild) {
 } else if (env.nodeEnv === 'production') {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
-    return res.status(503).json({
-      message: 'Frontend build not found. Run npm run build:frontend before deployment start.',
-      expectedFile: frontendIndex
-    });
+    return res.redirect(env.clientUrl);
   });
 } else {
   app.get('/', (_req, res) => res.redirect(env.clientUrl));
