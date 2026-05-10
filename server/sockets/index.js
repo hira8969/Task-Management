@@ -8,7 +8,13 @@ let io;
 
 export function initializeSocket(httpServer) {
   io = new Server(httpServer, {
-    cors: { origin: env.clientUrl, credentials: true }
+    cors: {
+      origin(origin, callback) {
+        if (!origin) return callback(null, true);
+        return callback(null, env.clientUrls.includes(origin));
+      },
+      credentials: true
+    }
   });
 
   io.use(async (socket, next) => {

@@ -5,7 +5,7 @@ import User from '../models/User.js';
 import Workspace from '../models/Workspace.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { setRefreshCookie, signAccessToken, signRefreshToken } from '../utils/tokens.js';
+import { clearRefreshCookie, setRefreshCookie, signAccessToken, signRefreshToken } from '../utils/tokens.js';
 
 const publicUser = (user) => ({
   _id: user._id,
@@ -98,7 +98,7 @@ export const me = asyncHandler(async (req, res) => {
 });
 
 export const logout = asyncHandler(async (_req, res) => {
-  res.clearCookie('refreshToken');
+  clearRefreshCookie(res);
   res.json({ message: 'Logged out' });
 });
 

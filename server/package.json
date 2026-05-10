@@ -4,7 +4,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "concurrently -k -n backend,frontend -c blue,green \"npm run dev:api\" \"npm --prefix ../frontend run dev\"",
+    "dev:api": "nodemon server.js",
     "start": "node server.js",
     "seed": "node utils/seed.js"
   },
@@ -30,6 +31,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10"
   }
 }
