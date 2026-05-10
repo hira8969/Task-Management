@@ -113,6 +113,24 @@ The frontend includes `frontend/vercel.json` so React Router routes like `/login
 
 Render backend root (`/`) redirects to the Vercel frontend. API routes stay under `/api`.
 
+Authentication deployment checklist:
+
+```text
+Vercel:
+VITE_API_URL=https://task-management-75oz.onrender.com
+VITE_SOCKET_URL=https://task-management-75oz.onrender.com
+
+Render:
+NODE_ENV=production
+CLIENT_URL=https://task-management-fawn-three.vercel.app
+CLIENT_URLS=https://task-management-fawn-three.vercel.app,https://task-management-jnzoak7lr-hira8969s-projects.vercel.app
+COOKIE_SECRET=your-strong-cookie-secret
+JWT_ACCESS_SECRET=your-strong-access-secret
+JWT_REFRESH_SECRET=your-strong-refresh-secret
+```
+
+If login/register fails after deploy, open the browser Network tab and check the request to `/api/auth/login` or `/api/auth/register`. A CORS error means `CLIENT_URLS` is missing the Vercel URL. A `localhost` request means Vercel was built with the wrong `VITE_API_URL`; update the env variable and redeploy the frontend.
+
 Use these local env values:
 
 ```text

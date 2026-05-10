@@ -28,17 +28,25 @@ const __dirname = path.dirname(__filename);
 const frontendDist = path.resolve(__dirname, '../frontend/dist');
 const frontendIndex = path.join(frontendDist, 'index.html');
 const hasFrontendBuild = fs.existsSync(frontendIndex);
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  const normalizedOrigin = origin.replace(/\/$/, '');
+  if (env.clientUrls.includes(normalizedOrigin)) return true;
+  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin);
+};
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin) return callback(null, true);
-    return callback(null, env.clientUrls.includes(origin));
+    return callback(null, isAllowedOrigin(origin));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 700, standardHeaders: true, legacyHeaders: false }));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));

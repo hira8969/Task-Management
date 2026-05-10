@@ -6,12 +6,18 @@ import { logger } from '../utils/logger.js';
 
 let io;
 
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  const normalizedOrigin = origin.replace(/\/$/, '');
+  if (env.clientUrls.includes(normalizedOrigin)) return true;
+  return /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin);
+};
+
 export function initializeSocket(httpServer) {
   io = new Server(httpServer, {
     cors: {
       origin(origin, callback) {
-        if (!origin) return callback(null, true);
-        return callback(null, env.clientUrls.includes(origin));
+        return callback(null, isAllowedOrigin(origin));
       },
       credentials: true
     }
