@@ -94,11 +94,22 @@ If Render is still configured with `npm run dev`, change it to `npm start`. The 
 Vercel frontend env:
 
 ```text
-VITE_API_URL=https://task-management-75oz.onrender.com/api
+VITE_API_URL=https://task-management-75oz.onrender.com
 VITE_SOCKET_URL=https://task-management-75oz.onrender.com
 ```
 
 After changing these Vercel env values, redeploy the frontend. Vite embeds `VITE_*` values at build time, so old deployments can keep calling `localhost` until rebuilt.
+
+Vercel frontend settings:
+
+```text
+Framework Preset: Vite
+Root Directory: frontend
+Build Command: npm run build
+Output Directory: dist
+```
+
+The frontend includes `frontend/vercel.json` so React Router routes like `/login` and `/dashboard` keep working after refresh.
 
 Render backend root (`/`) redirects to the Vercel frontend. API routes stay under `/api`.
 
