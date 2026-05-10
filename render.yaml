@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: task-management
+    env: node
+    rootDir: .
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://task-management-75oz.onrender.com
+      - key: CLIENT_URLS
+        value: https://task-management-75oz.onrender.com,https://task-management-fawn-three.vercel.app,https://task-management-jnzoak7lr-hira8969s-projects.vercel.app

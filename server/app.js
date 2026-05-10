@@ -48,11 +48,6 @@ app.use(hpp());
 app.use(compression());
 if (env.nodeEnv !== 'test') app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
 
-if (env.nodeEnv !== 'production') {
-  app.get('/', (_req, res) => res.redirect(env.clientUrl));
-  app.get('/favicon.ico', (_req, res) => res.sendStatus(204));
-}
-
 app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'orbitflow-api' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -64,7 +59,7 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 
-if (env.nodeEnv === 'production' && hasFrontendBuild) {
+if (hasFrontendBuild) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
@@ -73,8 +68,14 @@ if (env.nodeEnv === 'production' && hasFrontendBuild) {
 } else if (env.nodeEnv === 'production') {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
-    return res.status(503).json({ message: 'Frontend build not found. Run npm run build:frontend before deployment start.' });
+    return res.status(503).json({
+      message: 'Frontend build not found. Run npm run build:frontend before deployment start.',
+      expectedFile: frontendIndex
+    });
   });
+} else {
+  app.get('/', (_req, res) => res.redirect(env.clientUrl));
+  app.get('/favicon.ico', (_req, res) => res.sendStatus(204));
 }
 
 app.use(notFound);
