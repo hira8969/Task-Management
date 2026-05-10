@@ -98,6 +98,8 @@ VITE_API_URL=https://task-management-75oz.onrender.com/api
 VITE_SOCKET_URL=https://task-management-75oz.onrender.com
 ```
 
+After changing these Vercel env values, redeploy the frontend. Vite embeds `VITE_*` values at build time, so old deployments can keep calling `localhost` until rebuilt.
+
 Render backend root (`/`) redirects to the Vercel frontend. API routes stay under `/api`.
 
 Use these local env values:
