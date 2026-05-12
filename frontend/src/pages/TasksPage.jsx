@@ -21,6 +21,7 @@ const emptyFilters = {
   priority: 'all'
 };
 
+const emptyTasks = [];
 const formatDate = (value) => (value ? new Date(value).toLocaleDateString() : 'No date');
 const checklistCount = (task) => `${task.checklist?.filter((item) => item.completed).length || 0}/${task.checklist?.length || 0}`;
 
@@ -30,7 +31,7 @@ export default function TasksPage() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery({ queryKey: ['tasks', 'list'], queryFn: () => taskService.list({ limit: 100 }) });
 
-  const tasks = data?.data || [];
+  const tasks = data?.data || emptyTasks;
   const filteredTasks = useMemo(() => {
     const search = filters.search.trim().toLowerCase();
     return tasks.filter((task) => {
